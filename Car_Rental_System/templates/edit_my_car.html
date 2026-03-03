@@ -1,0 +1,14 @@
+<h2>Edit Your Car</h2>
+
+<form method="POST">
+    <label>Car Name:</label>
+    <input type="text" name="name" value="{{ car.name }}" required><br><br>
+
+    <label>Price:</label>
+    <input type="number" name="price" value="{{ car.price }}" required><br><br>
+
+    <label>Description:</label>
+    <textarea name="description">{{ car.description }}</textarea><br><br>
+
+    <button type="submit">Update</button>
+</form>

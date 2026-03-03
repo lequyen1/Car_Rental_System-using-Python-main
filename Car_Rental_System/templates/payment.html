@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+
+  <h2 class="text-center mb-4">Payment</h2>
+
+  <div class="card p-4 shadow">
+
+    <h4>Car: {{ car.name }}</h4>
+
+    <p><b>Price / day:</b> {{ "{:,}".format(car.price) }} VND</p>
+
+    <p><b>Rent date:</b> {{ start }}</p>
+    <p><b>Return date:</b> {{ end }}</p>
+
+    <p><b>Days:</b> {{ days }}</p>
+
+<hr>
+
+<h4 class="text-danger">
+  Total: {{ "{:,}".format(total) }} VND
+</h4>
+
+
+    <form action="{{ url_for('pay_success') }}" method="post">
+
+      <input type="hidden" name="car_id" value="{{ car_id }}">
+      <input type="hidden" name="start" value="{{ start }}">
+      <input type="hidden" name="end" value="{{ end }}">
+      <input type="hidden" name="days" value="{{ days }}">
+      <input type="hidden" name="total" value="{{ total }}">
+
+      <button type="submit"
+              class="btn btn-success btn-lg w-100 mt-3">
+      Pay Now
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}

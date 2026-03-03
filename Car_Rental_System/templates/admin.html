@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="admin-dashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar shadow">
+    <div class="sidebar-header">
+      <h2>admin_panel</h2>
+    </div>
+      <button id="toggleTheme" class="btn btn-sm btn-light w-100 mb-4">
+      Dark Mode
+  </button>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-card-hover"><a href="#dashboard" class="nav-link">📊 Dashboard</a></div>
+      <div class="nav-card-hover"><a href="#add-car-form" class="nav-link">➕ Add Car</a></div>
+      <div class="nav-card-hover"><a href="#edit-car-form" class="nav-link">✏️ Edit Car</a></div>
+      <div class="nav-card-hover"><a href="#remove-car-form" class="nav-link">❌ Remove Car</a></div>
+      <div class="nav-card-hover"><a href="#all-cars" class="nav-link">📋 All Cars</a></div>
+      <div class="nav-card-hover"><a href="#pending-approval" class="nav-link">⏳ Pending Approval</a></div>
+    </nav>
+    <div class="mt-auto">
+      <a href="{{ url_for('logout') }}"
+        class="btn btn-danger w-100 mt-4">
+        Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content-area">
+    <!-- Dashboard -->
+    <section id="dashboard" class="content-section">
+      <h1 class="section-title">Dashboard</h1>
+      <div class="stats">
+        <div class="stat-card gradient-card">
+          <h3>Total Cars</h3>
+          <p>{{ all_cars|length }}</p>
+        </div>
+        <div class="stat-card gradient-card">
+          <h3>Available</h3>
+          <p>{{ all_cars|selectattr('status', 'equalto', 'Available')|list|length }}</p>
+        </div>
+        <div class="stat-card gradient-card">
+          <h3>Rented</h3>
+          <p>{{ all_cars|selectattr('status', 'equalto', 'Rented')|list|length }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Add Car -->
+    <section id="add-car-form" class="content-section">
+      <h2 class="section-title">Add Car</h2>
+      <div class="glass-card">
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="add">
+          <input type="text" name="car_id" placeholder="Car ID" required>
+          <input type="text" name="name" placeholder="Car Name" required>
+          <input type="text" name="status" placeholder="Status (Available/Rented)" required>
+          <input type="file" name="image" accept="image/*" required>
+          <input type="number" name="rating" step="0.1" min="0" max="5" placeholder="Rating (0-5)" required>
+          <input type="number" name="discount" min="0" max="100" placeholder="Discount (%)" required>
+          <input type="number" min="0" name="price" placeholder="Price (VND / day)" required>
+          <div class="mb-3">
+            <textarea name="description"
+                      class="form-control"
+                      rows="3"
+                      placeholder="VD: 5 chỗ, số tự động, máy xăng, điều hòa, năm sản xuất, giao tận nơi/tự lấy..."
+                      required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mt-2">➕ Add Car</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Edit Car -->
+    <section id="edit-car-form" class="content-section">
+      <h2 class="section-title">Edit Car</h2>
+      <div class="glass-card">
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="action" value="edit">
+          <select name="car_id" class="form-select mb-3" required>
+            {% for car in all_cars %}
+              <option value="{{ car.id }}">{{ car.name }} ({{ car.id }})</option>
+            {% endfor %}
+          </select>
+          <input type="text" name="name" placeholder="New Name">
+          <input type="text" name="status" placeholder="New Status">
+          <input type="file" name="image" accept="image/*">
+          <input type="number" name="rating" step="0.1" min="0" max="5" placeholder="Rating (0-5)" required>
+          <input type="number" name="discount" min="0" max="100" placeholder="Discount (%)" required>
+          <input type="number" min="0" name="price" placeholder="Price (VND / day)" required>
+          <!-- Description -->
+          <div class="mb-3">
+            <textarea name="description"
+                      class="form-control"
+                      rows="3"
+                      placeholder="VD: 5 chỗ, số tự động, máy xăng, điều hòa, năm sản xuất, giao tận nơi/tự lấy..."
+                      required></textarea>
+          </div>
+          <button type="submit" class="btn btn-warning w-100 mt-2">✏️ Update</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Remove Car -->
+    <section id="remove-car-form" class="content-section">
+      <h2 class="section-title">Remove Car</h2>
+      <div class="glass-card">
+        <form method="post">
+          <input type="hidden" name="action" value="remove">
+          <select name="car_id" class="form-select mb-3" required>
+            {% for car in all_cars %}
+              <option value="{{ car.id }}">{{ car.name }} ({{ car.id }})</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-danger w-100">❌ Remove</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- All Cars Display -->
+    <section id="all-cars" class="content-section">
+      <h2 class="section-title">All Cars</h2>
+      <div class="row">
+        {% for car in all_cars %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+{% if car.image and car.image.startswith('http') %}
+  <img src="{{ car.image }}" 
+       class="card-img-top" 
+       alt="{{ car.name }}">
+
+            {% elif car.image %}
+              <img src="{{ url_for('static', filename='uploads/' + car.image) }}" 
+                  class="card-img-top" 
+                  alt="{{ car.name }}">
+
+            {% else %}
+              <img src="{{ url_for('static', filename='images/no-image.png') }}"
+                  class="card-img-top"
+                  alt="No image">
+            {% endif %}
+
+
+            <div class="card-body">
+              <p class="card-text">
+              <strong>ID:</strong> {{ car.id }} <br>
+
+              <strong>Status:</strong>
+              <span class="badge bg-success">{{ car.status }}</span>
+              <br>
+
+              <!-- Rating -->
+              <strong>Rating:</strong>
+              ⭐ {{ "%.1f"|format(car.rating) }}/5
+              <br>
+
+              <!-- Discount -->
+              {% if car.discount > 0 %}
+                <strong>Discount:</strong>
+                <span class="text-danger">{{ car.discount }}%</span>
+              {% else %}
+                <strong>Discount:</strong> None
+              {% endif %}
+              <br>
+
+              <!-- Price -->
+              <strong>Price:</strong>
+              💰 {{ "{:,}".format(car.price) }} VND / day
+
+            </p>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    <hr>
+
+      <section id="pending-approval" class="content-section">
+      <h2>⏳ Pending Approval</h2>
+      <div class="car-list">
+      {% for car in pending_cars %}
+
+          <div class="car-card">
+
+              <h3>{{ car.name }}</h3>
+
+              <p>ID: {{ car.id }}</p>
+              <p>Price: {{ car.price }} VND</p>
+
+              <a href="{{ url_for('approve_car', car_id=car.id) }}"
+                class="btn approve">
+                Approve
+              </a>
+
+              <a href="{{ url_for('reject_car', car_id=car.id) }}"
+                class="btn reject">
+                Reject
+              </a>
+
+          </div>
+
+      {% endfor %}
+      </div>
+    </section>
+  </main>
+</div>
+
+
+<!-- Styles -->
+<style>
+   body.dark-mode {
+    background-color: #0f172a;
+    color: white;
+  }
+
+  body.dark-mode .content-area {
+    background-color: #1e293b;
+    color: white;
+  }
+
+  body.dark-mode .section-title,
+  body.dark-mode .stat-card,
+  body.dark-mode .glass-card,
+  body.dark-mode input,
+  body.dark-mode select,
+  body.dark-mode .nav-card-hover {
+    background-color: #1e293b !important;
+    color: white !important;
+    border-color: #334155 !important;
+  }
+
+  body.dark-mode .stat-card,
+  body.dark-mode .glass-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  body.dark-mode .nav-card-hover:hover {
+    background-color: #334155 !important;
+  }
+
+  body.dark-mode .btn-primary,
+  body.dark-mode .btn-warning,
+  body.dark-mode .btn-danger {
+    background-color: #0ea5e9 !important;
+    border-color: #0ea5e9 !important;
+    color: white;
+  }
+
+  body.dark-mode .btn-light {
+    background-color: #cbd5e1;
+    color: black;
+  }
+
+  /* Dark sidebar text */
+  .nav-card-hover .nav-link {
+    transition: all 0.3s ease;
+  }
+
+  body.dark-mode .nav-card-hover .nav-link {
+    color: #f1f5f9 !important;
+  }
+
+  .admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 240px;
+    background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .nav-card-hover {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-card-hover:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  }
+
+  .nav-card-hover .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .content-area {
+    flex: 1;
+    padding: 40px;
+    background: #f0f4f8;
+  }
+
+  .content-section {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #1e293b;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-card input,
+  .glass-card select {
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    flex: 1 1 30%;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: scale(1.05);
+  }
+
+  .stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .gradient-card {
+    background: linear-gradient(to right, #93c5fd, #a5f3fc);
+    color: #1e293b;
+  }
+
+  .car-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.car-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 220px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+}
+
+.approve {
+    background: green;
+}
+
+.reject {
+    background: red;
+}
+
+</style>
+
+<!-- JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggleTheme');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+  });
+</script>
+{% endblock %}

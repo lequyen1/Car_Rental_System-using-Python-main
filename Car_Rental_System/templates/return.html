@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5" data-aos="zoom-in">
+  <h2 class="mb-4 text-center">🔁 Return a Car</h2>
+  <form method="POST" action="/return" class="row g-4 shadow-lg p-4 rounded bg-white" onsubmit="return confirmReturn(event)">
+    <div class="col-md-6 mx-auto">
+      <label for="car_id" class="form-label fw-bold">Select a Rented Car</label>
+      <select name="car_id" id="car_id" class="form-select form-select-lg" required onchange="showPreview()">
+        {% for car in cars %}
+          <option value="{{ car.id }}" data-img="{{ url_for('static', filename='uploads/' + car.image) }}" data-name="{{ car.name }}">{{ car.id }} - {{ car.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Car Preview -->
+    <div class="col-md-6 mx-auto text-center" id="previewBox" style="display:none;">
+      <img id="carImg" src="" alt="Car Image" class="img-fluid rounded shadow mt-4" style="max-height: 300px;">
+      <div class="mt-2">
+        <strong id="carName" class="fs-5 text-dark"></strong>
+      </div>
+    </div>
+
+    <div class="col-12 text-center">
+      <button type="submit" class="btn btn-danger btn-lg px-5 mt-3">Return Car</button>
+    </div>
+  </form>
+</div>
+
+<!-- AOS Animation -->
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>AOS.init();</script>
+
+<!-- SweetAlert2 Toast + Confirm -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function showPreview() {
+    const select = document.getElementById("car_id");
+    const selected = select.options[select.selectedIndex];
+    const image = selected.getAttribute("data-img");
+    const name = selected.getAttribute("data-name");
+    const box = document.getElementById("previewBox");
+    const img = document.getElementById("carImg");
+    const label = document.getElementById("carName");
+    if (image) {
+      img.src = image;
+      label.innerText = name;
+      box.style.display = 'block';
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
+  function confirmReturn(event) {
+    event.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to return this car now?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, return it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Car Returned!',
+          text: 'We hope you had a great ride.',
+          timer: 3000,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false
+        });
+        setTimeout(() => event.target.submit(), 1000);
+      }
+    });
+    return false;
+  }
+</script>
+{% endblock %}

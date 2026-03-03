@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container py-5" data-aos="fade-up">
+    <h2 class="mb-4 text-center">Rent a Car</h2>
+    <form method="POST" action="/payment" class="row g-4 shadow-lg p-4 rounded bg-white">
+      <div class="col-md-6 mx-auto">
+        <label for="car_id" class="form-label fw-bold">Select a Car</label>
+        <select class="form-select form-select-lg" name="car_id" id="car_id" required onchange="updatePreview()">
+          {% for car in cars if car.status == 'Available' %}
+            <option value="{{ car.id }}" data-img="{{ car.image_url }}" data-price="{{ car.price }}">{{ car.name }} (ID: {{ car.car_id }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Car Preview -->
+      <div class="col-md-6 mx-auto text-center" id="carPreview" style="display:none;">
+        <img id="previewImage" src="" alt="Selected Car Image" class="img-fluid rounded shadow mt-4" style="max-height: 300px;">
+        <div class="mt-2">
+          <strong id="previewPrice" class="fs-5 text-dark"></strong>
+        </div>
+      </div>
+
+      <!-- Date Picker -->
+      <div class="col-md-6 mx-auto">
+        <label for="rental_date" class="form-label fw-bold">Select Rental Date</label>
+        <input type="text" id="rental_date" name="rental_date" class="form-control form-control-lg" placeholder="Choose date" required>
+      </div>
+
+      <!-- Return Date Picker -->
+      <div class="col-md-6 mx-auto">
+        <label for="return_date" class="form-label fw-bold">Return Date</label>
+        <input type="text" id="return_date" name="return_date" class="form-control form-control-lg" placeholder="Choose return date" required>
+      </div>
+
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-success btn-lg px-5 mt-3" onclick="rentalToast()">Rent Now</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- AOS Animation Library -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+
+  <!-- SweetAlert2 Toast -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function rentalToast() {
+      Swal.fire({
+        icon: 'success',
+        title: 'Car Rented!',
+        text: 'Your booking is being processed.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    }
+  </script>
+
+  <!-- Flatpickr Date Picker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#rental_date", {
+      dateFormat: "Y-m-d",
+      minDate: "today"
+    });
+    flatpickr("#return_date", {
+      dateFormat: "Y-m-d",
+      minDate: new Date().fp_incr(1)
+    });
+  </script>
+
+  <!-- Car Preview Script -->
+  <script>
+    function updatePreview() {
+      const select = document.getElementById('car_id');
+      const selectedOption = select.options[select.selectedIndex];
+      const imageUrl = selectedOption.getAttribute('data-img');
+      const price = selectedOption.getAttribute('data-price');
+      const preview = document.getElementById('carPreview');
+      const imgTag = document.getElementById('previewImage');
+      const priceTag = document.getElementById('previewPrice');
+
+      if (imageUrl) {
+        imgTag.src = imageUrl;
+        preview.style.display = 'block';
+        priceTag.innerText = `Price per day: ${price} VND`;
+      } else {
+        preview.style.display = 'none';
+        priceTag.innerText = '';
+      }
+    }
+  </script>
+{% endblock %}

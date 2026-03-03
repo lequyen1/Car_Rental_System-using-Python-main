@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2>My Favorite Cars</h2>
+
+    {% if cars %}
+        <div class="row">
+            {% for car in cars %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+
+                    {% if car.image and car.image.startswith('http') %}
+                        <img src="{{ car.image }}" class="card-img-top">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/' + car.image) }}" class="card-img-top">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car.name }}</h5>
+                        <p>Price: ${{ car.price }}</p>
+                        <p>Rating: {{ car.rating }}</p>
+
+                        <a href="{{ url_for('remove_favorite', car_id=car.id) }}"
+                           class="btn btn-danger btn-sm">
+                           Remove
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You have no favorite cars yet.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

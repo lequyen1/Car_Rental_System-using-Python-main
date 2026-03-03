@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Xe</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f3f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+            height: 90px;
+        }
+
+        button {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 25px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .back a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Đăng Xe Mới</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <label>Tên xe</label>
+        <input type="text" name="name" required>
+
+        <label>Ảnh</label>
+        <input type="file" name="image" accept="image/*" required>
+
+        <label>Giá thuê / ngày (VNĐ)</label>
+        <input type="number" name="price" required>
+
+        <label>Mô tả</label>
+        <textarea name="description"></textarea>
+
+        <button type="submit">Đăng xe</button>
+
+    </form>
+
+    <div class="back">
+        <a href="{{ url_for('home') }}">← Quay về trang chủ</a>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .login-box {
+            width: 350px;
+            margin: 100px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+            text-align: center;
+        }
+
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .btn-register {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .btn-login,
+        .btn-register,
+        .btn-back {
+            display: inline-block;
+
+            min-width: 110px;   
+            height: 40px;       
+            line-height: 40px;
+
+            text-align: center;
+            padding: 0 15px;
+            margin: 5px;
+
+            border-radius: 5px;
+            font-size: 15px;
+
+            text-decoration: none;
+        }
+        .forgot-box {
+            text-align: right;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .forgot-box a {
+            font-size: 13px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .forgot-box a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h2>Car Rental System</h2>
+
+    <!-- Hiện lỗi -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="error">
+          {{ messages[0] }}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <input type="text" name="username" placeholder="Username" required><br>
+
+        <input type="password" name="password" placeholder="Password" required><br>
+        <!-- Quên mật khẩu -->
+        <div class="forgot-box">
+            <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+        </div>
+    <div style="margin-top:15px;">
+
+        <!-- Login -->
+        <button type="submit" class="btn-login">
+            Login
+        </button>
+
+        <!-- Register -->
+        <a href="{{ url_for('register') }}" class="btn-register">
+            Register
+        </a>
+
+        <!-- Back -->
+        <a href="{{ url_for('home') }}" class="btn-back">
+            Back
+        </a>
+
+    </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

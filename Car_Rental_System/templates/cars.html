@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Available Cars{% endblock %}
+{% block content %}
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">Available Cars</h2>
+
+  <div class="row">
+    {% for car in cars %}
+      {% if car.status.lower() in ['available', 'approved'] %}
+
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+
+            {% if car.image %}
+                
+{% if car.image and car.image.startswith('http') %}
+   <img src="{{ car.image }}" 
+       class="card-img-top" 
+       alt="{{ car.name }}">
+
+              {% elif car.image %}
+                <img src="{{ url_for('static', filename='uploads/' + car.image) }}" 
+                    class="card-img-top" 
+                    alt="{{ car.name }}">
+
+              {% else %}
+                <img src="{{ url_for('static', filename='images/no-image.png') }}"
+                    class="card-img-top"
+                    alt="No image">
+              {% endif %}
+
+
+            {% else %}
+
+                <img src="{{ url_for('static', filename='default.jpg') }}"
+                    class="card-img-top"
+                    alt="No image">
+
+            {% endif %}
+            <div class="card-body">
+
+              <h5 class="card-title">{{ car.name }}</h5>
+
+              <p class="card-text">
+
+                <strong>ID:</strong> {{ car.id }} <br>
+
+                <strong>Status:</strong>
+                <span class="badge bg-success">{{ car.status }}</span>
+                <br>
+
+                <!-- Rating -->
+                <strong>Rating:</strong>
+                 {{ "%.1f"|format(car.rating) }}/5
+                <br>
+
+                <!-- Discount -->
+                {% if car.discount > 0 %}
+                  <strong>Discount:</strong>
+                  <span class="text-danger">{{ car.discount }}%</span>
+                {% else %}
+                  <strong>Discount:</strong> None
+                {% endif %}
+                <br>
+                <!-- Price -->
+                <strong>Price:</strong>
+                  {{ "{:,}".format(car.price) }} VND / day
+                <br>
+              </p>
+              <!-- Description -->
+              <p class="text-muted small mb-2">
+                {{ car.description }}
+              </p>
+            <div class="d-grid gap-2 mt-3">
+                <a href="{{ url_for('rent_car', car_id=car.id) }}" 
+                  class="btn btn-dark btn-lg rounded-3">
+                    Rent Now
+                </a>
+
+                <a href="{{ url_for('add_favorite', car_id=car.id) }}" 
+                  class="btn btn-outline-dark btn-lg rounded-3">
+                    Add to Favorite
+                </a>
+            </div>
+            </div>
+          </div>
+        </div>
+
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

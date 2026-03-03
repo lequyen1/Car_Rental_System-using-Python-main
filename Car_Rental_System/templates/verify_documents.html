@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Giấy tờ xe</title>
+
+    <!-- Font Awesome để có icon + -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            background:#f5f5f5;
+            margin:0;
+        }
+
+        /* Header */
+        .header{
+            background:#111;
+            color:white;
+            padding:15px;
+            display:flex;
+            align-items:center;
+        }
+
+        .header a{
+            color:white;
+            text-decoration:none;
+            font-size:20px;
+            margin-right:15px;
+        }
+
+        .header h3{
+            margin:0;
+            flex:1;
+            text-align:center;
+        }
+
+        /* Card */
+        .card{
+            background:white;
+            margin:15px;
+            border-radius:8px;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .item{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:15px;
+            border-bottom:1px solid #eee;
+        }
+
+        .item:last-child{
+            border-bottom:none;
+        }
+
+        .item-info h4{
+            margin:0;
+            font-size:16px;
+        }
+
+        .item-info p{
+            margin:5px 0 0;
+            color:#888;
+            font-size:13px;
+        }
+
+        .upload-btn{
+            background:#ff7a00;
+            color:white;
+            border:none;
+            width:36px;
+            height:36px;
+            border-radius:50%;
+            cursor:pointer;
+            font-size:18px;
+        }
+
+        input[type="file"]{
+            display:none;
+        }
+
+        /* Submit */
+        .submit-area{
+            text-align:center;
+            margin:25px;
+        }
+
+        .submit-area button{
+            background:#ff7a00;
+            color:white;
+            border:none;
+            padding:12px 40px;
+            border-radius:25px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <a href="{{ url_for('home') }}"><i class="fa fa-times"></i></a>
+    <h3>GIẤY TỜ XE</h3>
+</div>
+
+
+<form method="POST" action="{{ url_for('verify_docs') }}" enctype="multipart/form-data">
+
+    <div class="card">
+
+        <!-- Cà vẹt -->
+        <div class="item">
+            <div class="item-info">
+                <h4>Cà vẹt</h4>
+                <p id="cavet-text">Không có dữ liệu</p>
+            </div>
+                <div class="upload-btn" onclick="document.getElementById('cavet').click()">
+                    <i class="fa fa-plus"></i>
+                </div>
+
+                <input type="file" id="cavet" name="cavet" accept="image/*"
+                    onchange="showName(this,'cavet-text')" hidden required>
+        </div>
+
+
+        <!-- Căn cước công dân -->
+        <div class="item">
+            <div class="item-info">
+                <h4>Căn cước công dân</h4>
+                <p id="cccd-text">Không có dữ liệu</p>
+            </div>
+
+                <div class="upload-btn" onclick="document.getElementById('cccd').click()">
+                    <i class="fa fa-plus"></i>
+                </div>
+
+                <input type="file" id="cccd" name="cccd" accept="image/*"
+                    onchange="showName(this,'cccd-text')" hidden required>
+            </label>
+        </div>
+
+
+        <!-- Bằng lái xe -->
+        <div class="item">
+            <div class="item-info">
+                <h4>Bằng lái xe</h4>
+                <p id="license-text">Không có dữ liệu</p>
+            </div>
+
+                <div class="upload-btn" onclick="document.getElementById('license').click()">
+                    <i class="fa fa-plus"></i>
+                </div>
+
+                <input type="file" id="license" name="license" accept="image/*"
+                    onchange="showName(this,'license-text')" hidden required>
+            </label>
+        </div>
+
+    </div>
+
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+        <button type="submit">Next</button>
+    </div>
+
+</form>
+
+
+<!-- JS -->
+<script>
+
+function showName(input, textId){
+
+    if(input.files.length > 0){
+
+        document.getElementById(textId).innerText =
+            input.files[0].name;
+
+    }
+
+}
+
+</script>
+
+
+</body>
+</html>

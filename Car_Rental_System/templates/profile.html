@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    margin:0;
+}
+
+/* Card chính */
+.profile-box{
+    width:450px;
+    margin:80px auto;
+    background:white;
+    padding:35px;
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
+    transition:0.3s;
+}
+
+.profile-box:hover{
+    transform:translateY(-5px);
+}
+
+/* Avatar */
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#2a5298;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:35px;
+    font-weight:bold;
+    margin:0 auto 15px auto;
+}
+
+/* Tiêu đề */
+.profile-box h2{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+.username{
+    text-align:center;
+    color:gray;
+    margin-bottom:25px;
+}
+
+/* Thông tin user */
+.info{
+    background:#f8f9fa;
+    padding:12px 15px;
+    border-radius:8px;
+    margin-bottom:12px;
+    font-size:14px;
+}
+
+.info b{
+    color:#2a5298;
+}
+
+/* Menu chức năng */
+.menu-item{
+    margin-top:12px;
+}
+
+.menu-item a{
+    text-decoration:none;
+    display:block;
+    padding:12px;
+    border-radius:8px;
+    background:#f1f1f1;
+    color:#333;
+    transition:0.3s;
+    font-weight:500;
+}
+
+.menu-item a:hover{
+    background:#2a5298;
+    color:white;
+}
+
+/* Nút edit nổi bật */
+.edit-btn a{
+    background:#28a745;
+    color:white;
+    text-align:center;
+}
+
+.edit-btn a:hover{
+    background:#218838;
+}
+
+/* Back */
+.back{
+    margin-top:20px;
+    text-align:center;
+}
+
+.back a{
+    color:#4cc9f0;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="profile-box">
+
+<div class="avatar">
+    {{ user.username[0]|upper }}
+</div>
+
+<h2>PROFILE</h2>
+<div class="username">@{{ user.username }}</div>
+
+<!-- Thông tin người dùng -->
+<div class="info">
+    <b>Full Name:</b> {{ user.full_name or "Not updated" }}
+</div>
+
+<div class="info">
+    <b>Email:</b> {{ user.email or "Not updated" }}
+</div>
+
+<div class="info">
+    <b>Phone:</b> {{ user.phone or "Not updated" }}
+</div>
+
+<!-- Menu chức năng -->
+<div class="menu-item">
+  <a href="{{ url_for('view_favorites') }}">❤️ Favorites List</a>
+</div>
+
+<div class="menu-item">
+  <a href="{{ url_for('my_rental_cars') }}">🚗 My Rental Cars</a>
+</div>
+
+<div class="menu-item">
+  <a href="{{ url_for('rental_history') }}">📜 Rental History</a>
+</div>
+
+<div class="menu-item edit-btn">
+  <a href="/edit-profile">✏ Edit Profile</a>
+</div>
+
+<div class="back">
+  <a href="/">← Back to Home</a>
+</div>
+
+</div>
+
+</body>
+</html>
